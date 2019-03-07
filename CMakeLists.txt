@@ -20,5 +20,6 @@ include_directories(
   ${PROJECT_SOURCE_DIR}/src/config)
 
 add_executable(lnetd src/lnetd.cc
+  src/socket.cc
   src/config/config.cc)
 include(cpp)
