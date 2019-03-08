@@ -46,3 +46,6 @@ _deps
 
 # Our executable
 lnetd
+
+# valgrind dump files
+vgcore.*
