@@ -1,6 +1,10 @@
 #include <cstdlib>
 #include <iostream>
 
+#include <unistd.h>
+#include <getopt.h>
+
+#include "config.hh"
 #include "socket.hh"
 
 static void usage()
@@ -21,8 +25,43 @@ static void usage()
 
 int main(int argc, char *argv[])
 {
+        int c = 0;
+        std::string_view config_path;
+        Config *cnf = nullptr;
+
+        static const struct option options[] = {
+                {"config", required_argument, NULL, 'c'}
+        };
+
         if (argc == 1)
                 usage();
 
+        while ((c = getopt_long(argc, argv, "hc:", options, NULL)) >= 0)
+        {
+                switch (c)
+                {
+                case 'c':
+                        config_path = optarg;
+                        break;
+                default:
+                        break;
+                }
+        }
+
+        if (config_path.empty())
+                usage();
+        
+        try
+        {
+                cnf = new Config(std::move(config_path));
+        }
+        catch (std::exception &e)
+        {
+                std::cout << e.what() << std::endl;
+                delete cnf;
+                std::exit(EXIT_FAILURE);
+        }
+
+        delete cnf;
 	return 0;
 }
